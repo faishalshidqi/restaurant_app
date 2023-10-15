@@ -1,177 +1,211 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/data/model/drink.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
 
-Widget _buildMenuItem(BuildContext context, Drink menu) {
-  return Material(
-    child: ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      title: Text(
-        menu.name,
-        style: Theme.of(context).textTheme.bodyMedium,
+Widget? _buildMenuTableItem(BuildContext context, Drink menu) {
+  return Column(
+    children: [
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(menu.name),
       ),
-    ),
+    ],
   );
 }
 
-class RestaurantDetailPage extends StatelessWidget {
+class RestaurantDetailPage extends StatefulWidget {
   static const routeName = '/restaurant_detail';
   final Restaurant restaurant;
   const RestaurantDetailPage({super.key, required this.restaurant});
 
   @override
-  Widget build(BuildContext context) {
+  State<RestaurantDetailPage> createState() => _RestaurantDetailPageState();
+}
 
+class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
+  bool isClicked = false;
+  int maxLines = 6;
+
+  String textButton = 'Click here to read more';
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(restaurant.name),
-      ),
-      body: FutureBuilder<String>(
-        future: DefaultAssetBundle.of(context).loadString('assets/local_restaurant.json'),
-        builder: (context, snapshot) {
-          final Menus menus = menusFromJson(restaurant.menus.toString());
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Image.network(restaurant.pictureId),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+        appBar: AppBar(
+          title: Text(widget.restaurant.name),
+        ),
+        body: FutureBuilder<String>(
+          future: DefaultAssetBundle.of(context)
+              .loadString('assets/local_restaurant.json'),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: Hero(
+                  tag: widget.restaurant.id,
+                  child: Column(
+                    children: [
+                      Image.network(widget.restaurant.pictureId),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(
-                              Icons.pin_drop_outlined,
-                              size: 25,
-                            ),
-                            const SizedBox(width: 15),
-                            Text(
-                              restaurant.city,
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                                Icons.star_border,
-                                size: 25
-                            ),
-                            const SizedBox(width: 15),
-                            Text(
-                              restaurant.rating.toString(),
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                          ],
-                        ),
-                        const Divider(
-                          color: Colors.grey,
-                          thickness: 5,
-                        ),
-                        Text(
-                          'Tentang Restoran Ini',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        Text(
-                            restaurant.description
-                        ),
-                        const Divider(
-                          color: Colors.grey,
-                          thickness: 5,
-                        ),
-                        Text(
-                          'Menu',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        ListView.builder(
-                          itemCount: menus.foods.length,
-                          itemBuilder: (context, index) {
-                            return _buildMenuItem(context, menus.foods[index]);
-                          },
-                        )
-                        /*Table(
-                              columnWidths: const {1:FractionColumnWidth(0.75)},
+                            Row(
                               children: [
-                                TableRow(
-                                    children: [
-                                      const Text('Makanan'),
-                                      Column(
-                                        children:
-                                        [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(restaurant.menus.foods[index].name),
-                                          ),
-                                        ],
-                                      ),
-                                    ]
-                                ),
-                                TableRow(
-                                    children: [
-                                      const Text('Minuman'),
-                                      Column(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(restaurant.menus.drinks[0].name),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(restaurant.menus.drinks[1].name),
-                                          ),
-                                        ],
-                                      ),
-                                    ]
+                                const Icon(Icons.star_border, size: 25),
+                                const SizedBox(width: 15),
+                                Text(
+                                  widget.restaurant.rating.toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
                                 ),
                               ],
-                            )*/
-                      ],
+                            ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.pin_drop_outlined,
+                                  size: 25,
+                                ),
+                                const SizedBox(width: 15),
+                                Text(
+                                  widget.restaurant.city,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                              ],
+                            ),
+                            const Divider(
+                              color: Colors.grey,
+                              thickness: 5,
+                            ),
+                            Text(
+                              'Tentang Restoran Ini',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Text(
+                              widget.restaurant.description,
+                              overflow: TextOverflow.fade,
+                              maxLines: maxLines,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  isClicked = !isClicked;
+                                  if (isClicked) {
+                                    textButton = 'Read less';
+                                    maxLines = 30;
+                                  } else {
+                                    textButton = 'Click here to read more';
+                                    maxLines = 6;
+                                  }
+                                });
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                child: Text(
+                                  textButton,
+                                  style: Theme.of(context).textTheme.titleSmall,
+                                ),
+                              ),
+                            ),
+                            const Divider(
+                              color: Colors.grey,
+                              thickness: 5,
+                            ),
+                            Text(
+                              'Menu',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Table(
+                              columnWidths: const {1: FractionColumnWidth(0.7)},
+                              children: [
+                                TableRow(
+                                  children: [
+                                    Text(
+                                      'Makanan',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall,
+                                    ),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          widget.restaurant.menus.foods.length,
+                                      itemBuilder: (context, index) {
+                                        return _buildMenuTableItem(
+                                            context,
+                                            widget
+                                                .restaurant.menus.foods[index]);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Table(
+                              columnWidths: const {1: FractionColumnWidth(0.7)},
+                              children: [
+                                TableRow(
+                                  children: [
+                                    Text(
+                                      'Minuman',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall,
+                                    ),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          widget.restaurant.menus.drinks.length,
+                                      itemBuilder: (context, index) {
+                                        return _buildMenuTableItem(
+                                            context,
+                                            widget.restaurant.menus
+                                                .drinks[index]);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
                     ),
-                  )
-                ],
-              ),
-            );
-              /*ListView.builder(
-              itemCount: 2,
-              itemBuilder: (context, index) {
-                return
-              },
-            );*/
-          }
-          else if (snapshot.hasError) {
-            return const Center(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                  ),
-                  Text(
-                      'Error loading the data'
-                  )
-                ],
-              ),
-            );
-          }
-          else {
-            return const Center(
-              child: Column(
-                children: [
-                  SizedBox(
-                    child: CircularProgressIndicator(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text('Still loading'),
-                  )
-                ],
-              ),
-            );
-          }
-        },
-      )
-    );
+                    Text('Error loading the data')
+                  ],
+                ),
+              );
+            } else {
+              return const Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      child: CircularProgressIndicator(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text('Still loading'),
+                    )
+                  ],
+                ),
+              );
+            }
+          },
+        ));
   }
 }

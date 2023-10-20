@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/model/restaurant.dart';
-import 'package:restaurant_app/data/model/restaurants.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/result_state.dart';
+import 'package:restaurant_app/data/model/restaurant_in_list.dart';
+import 'package:restaurant_app/provider/restaurants_provider.dart';
 import 'package:restaurant_app/ui/restaurant_detail_page.dart';
+import 'package:restaurant_app/ui/search_page.dart';
 import 'package:restaurant_app/widgets/platform_widget.dart';
 
 class RestaurantListPage extends StatelessWidget {
@@ -16,7 +19,13 @@ class RestaurantListPage extends StatelessWidget {
   Widget _androidBuild(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Restaurant App'),
+        title: Text(
+          'Restaurant App',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        actions: [
+          IconButton(onPressed: () => Navigator.pushNamed(context, SearchPage.routeName), icon: const Icon(Icons.search))
+        ],
       ),
       body: _buildRestaurantList(context),
     );
@@ -24,52 +33,49 @@ class RestaurantListPage extends StatelessWidget {
 
   Widget _iOSBuild(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('Restaurant App'),
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(
+            'Restaurant App',
+            style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        trailing: IconButton(icon: const Icon(CupertinoIcons.search), onPressed: () => Navigator.pushNamed(context, SearchPage.routeName)),
         transitionBetweenRoutes: false,
       ),
       child: _buildRestaurantList(context),
     );
   }
 
-  FutureBuilder<String> _buildRestaurantList(BuildContext context) {
-    return FutureBuilder<String>(
-      future: DefaultAssetBundle.of(context)
-          .loadString('assets/local_restaurant.json'),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          //print(snapshot.data);
-          final Restaurants data = parsedFromJson(snapshot.data.toString());
+  Widget _buildRestaurantList(BuildContext context) {
+    return Consumer<RestaurantsProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.state == ResultState.hasData) {
           return ListView.builder(
-            itemCount: data.restaurants.length,
+            itemCount: state.restaurants.restaurants.length,
             itemBuilder: (context, index) {
-              return _buildRestaurantItem(context, data.restaurants[index]);
+              var restaurant = state.restaurants.restaurants[index];
+              return _buildRestaurantItem(context, restaurant);
             },
           );
-        } else if (snapshot.hasError) {
-          return const Center(
-            child: Column(
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  color: Colors.red,
-                ),
-                Text('Error loading the data')
-              ],
+        } else if (state.state == ResultState.noData) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
+        } else if (state.state == ResultState.error) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
             ),
           );
         } else {
           return const Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  child: CircularProgressIndicator(),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text('Still loading'),
-                )
-              ],
+            child: Material(
+              child: Text(''),
             ),
           );
         }
@@ -77,7 +83,8 @@ class RestaurantListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
+  Widget _buildRestaurantItem(
+      BuildContext context, RestaurantInList restaurant) {
     return Material(
       color: Colors.white,
       child: ListTile(
@@ -85,7 +92,7 @@ class RestaurantListPage extends StatelessWidget {
         leading: Hero(
           tag: restaurant.id,
           child: Image.network(
-            restaurant.pictureId,
+            'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
             width: 100,
             errorBuilder: (ctx, error, _) => const Center(
               child: Row(

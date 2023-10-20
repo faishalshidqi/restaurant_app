@@ -31,19 +31,18 @@ class ApiService {
     final response = await http.get(Uri.parse('$_baseUrl/search?q=$query'));
     if (response.statusCode == 200) {
       return SearchedRestaurant.fromJson(json.decode(response.body));
-    }
-    else {
+    } else {
       throw Exception('The searched data is not found');
     }
   }
 
-  Future<ReviewResponse> sendReview({id, name, review}) async {
-    final response = await http.post(Uri.parse('$_baseUrl/review'), body: json.encode({'id': id, 'name': name, 'review': review}));
-    if (response.statusCode == 200) {
+  Future<ReviewResponse> sendReview(id, name, review) async {
+    final response = await http.post(Uri.parse('$_baseUrl/review'),
+        body: jsonEncode({'id': id, 'name': name, 'review': review}),
+        headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 201) {
       return ReviewResponse.fromJson(json.decode(response.body));
-    }
-    else {
-      print(response.body);
+    } else {
       throw Exception('Failed to send review');
     }
   }

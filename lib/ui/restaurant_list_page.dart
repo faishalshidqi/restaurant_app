@@ -24,7 +24,10 @@ class RestaurantListPage extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         actions: [
-          IconButton(onPressed: () => Navigator.pushNamed(context, SearchPage.routeName), icon: const Icon(Icons.search))
+          IconButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, SearchPage.routeName),
+              icon: const Icon(Icons.search))
         ],
       ),
       body: _buildRestaurantList(context),
@@ -35,10 +38,13 @@ class RestaurantListPage extends StatelessWidget {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text(
-            'Restaurant App',
-            style: Theme.of(context).textTheme.headlineSmall,
+          'Restaurant App',
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
-        trailing: IconButton(icon: const Icon(CupertinoIcons.search), onPressed: () => Navigator.pushNamed(context, SearchPage.routeName)),
+        trailing: IconButton(
+            icon: const Icon(CupertinoIcons.search),
+            onPressed: () =>
+                Navigator.pushNamed(context, SearchPage.routeName)),
         transitionBetweenRoutes: false,
       ),
       child: _buildRestaurantList(context),

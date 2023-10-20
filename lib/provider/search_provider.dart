@@ -31,19 +31,16 @@ class SearchProvider extends ChangeNotifier {
         _state = ResultState.noData;
         notifyListeners();
         return _message = 'Empty Search Result';
-      }
-      else {
+      } else {
         _state = ResultState.hasData;
         notifyListeners();
         return _searched = searchResult;
       }
-    }
-    on SocketException {
+    } on SocketException {
       _state = ResultState.error;
       notifyListeners();
       return _message = 'No Internet Connection';
-    }
-    on ClientException catch (error) {
+    } on ClientException catch (error) {
       _state = ResultState.error;
       notifyListeners();
       _message = error.message;

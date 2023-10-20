@@ -15,11 +15,14 @@ class RestaurantCard extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Hero(
           tag: restaurant.id,
-          child: Image.network('https://restaurant-api.dicoding.dev/images/small/${restaurant.pictureId}'),
+          child: Image.network(
+              'https://restaurant-api.dicoding.dev/images/small/${restaurant.pictureId}'),
         ),
         title: Text(restaurant.name),
         subtitle: Text(restaurant.city),
-        onTap: () => Navigator.pushReplacementNamed(context, RestaurantDetailPage.routeName, arguments: restaurant),
+        onTap: () => Navigator.pushReplacementNamed(
+            context, RestaurantDetailPage.routeName,
+            arguments: restaurant),
       ),
     );
   }

@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:restaurant_app/data/model/customer_review.dart';
 
-ReviewResponse reviewResponseFromJson(String str) => ReviewResponse.fromJson(json.decode(str));
+ReviewResponse reviewResponseFromJson(String str) =>
+    ReviewResponse.fromJson(json.decode(str));
 
 String reviewResponseToJson(ReviewResponse data) => json.encode(data.toJson());
 
@@ -18,14 +19,16 @@ class ReviewResponse {
   });
 
   factory ReviewResponse.fromJson(Map<String, dynamic> json) => ReviewResponse(
-    error: json["error"],
-    message: json["message"],
-    customerReviews: List<CustomerReview>.from(json["customerReviews"].map((x) => CustomerReview.fromJson(x))),
-  );
+        error: json["error"],
+        message: json["message"],
+        customerReviews: List<CustomerReview>.from(
+            json["customerReviews"].map((x) => CustomerReview.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "error": error,
-    "message": message,
-    "customerReviews": List<dynamic>.from(customerReviews.map((x) => x.toJson())),
-  };
+        "error": error,
+        "message": message,
+        "customerReviews":
+            List<dynamic>.from(customerReviews.map((x) => x.toJson())),
+      };
 }

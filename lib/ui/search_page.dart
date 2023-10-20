@@ -16,7 +16,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   late TextEditingController _controller;
 
   @override
@@ -36,7 +35,6 @@ class _SearchPageState extends State<SearchPage> {
     return PlatformWidget(androidBuilder: _androidBuild, iOSBuilder: _iOSBuild);
   }
 
-
   Widget _buildSearchPage(BuildContext context) {
     return SafeArea(
       child: Material(
@@ -46,7 +44,8 @@ class _SearchPageState extends State<SearchPage> {
             Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 child: Text(
                   'Search Query',
                   style: Theme.of(context).textTheme.headlineSmall,
@@ -60,13 +59,11 @@ class _SearchPageState extends State<SearchPage> {
                     context: context,
                     builder: (BuildContext context) {
                       return _buildSearchList(context, value);
-                    }
-                );
+                    });
               },
               decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Input Something To Search Here'
-              ),
+                  labelText: 'Input Something To Search Here'),
             ),
           ],
         ),
@@ -85,12 +82,13 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _iOSBuild(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: const Text('Search'),
-        leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(CupertinoIcons.back)),
-      ),
-      child: _buildSearchPage(context)
-    );
+        navigationBar: CupertinoNavigationBar(
+          middle: const Text('Search'),
+          leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(CupertinoIcons.back)),
+        ),
+        child: _buildSearchPage(context));
   }
 
   Widget _buildSearchList(BuildContext context, String query) {
@@ -102,8 +100,7 @@ class _SearchPageState extends State<SearchPage> {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          }
-          else if (state.state == ResultState.hasData) {
+          } else if (state.state == ResultState.hasData) {
             return ListView.builder(
               shrinkWrap: true,
               itemCount: state.searched.restaurants.length,
@@ -112,15 +109,13 @@ class _SearchPageState extends State<SearchPage> {
                 return RestaurantCard(restaurant: result);
               },
             );
-          }
-          else if (state.state == ResultState.error) {
+          } else if (state.state == ResultState.error) {
             return Center(
               child: Material(
                 child: Text(state.message),
               ),
             );
-          }
-          else {
+          } else {
             return const Material(
               child: Text(''),
             );

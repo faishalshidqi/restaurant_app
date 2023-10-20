@@ -38,24 +38,21 @@ class ReviewProvider extends ChangeNotifier {
     try {
       _state = ResultState.loading;
       notifyListeners();
-      final reviewResult = await apiService.sendReview(id: id, name: name, review: review);
+      final reviewResult = await apiService.sendReview(id, name, review);
       if (reviewResult.error) {
         _state = ResultState.noData;
         notifyListeners();
         return _message = 'Failed sending review';
-      }
-      else {
+      } else {
         _state = ResultState.hasData;
         notifyListeners();
         return _reviewResponse = reviewResult;
       }
-    }
-    on SocketException {
+    } on SocketException {
       _state = ResultState.error;
       notifyListeners();
       return _message = 'No Internet Connection';
-    }
-    on ClientException catch (error) {
+    } on ClientException catch (error) {
       _state = ResultState.error;
       notifyListeners();
       _message = error.message;

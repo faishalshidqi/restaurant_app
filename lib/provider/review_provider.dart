@@ -12,9 +12,7 @@ class ReviewProvider extends ChangeNotifier {
   String? name;
   String? review;
 
-  ReviewProvider({required this.apiService, required this.id}) {
-    postReview(id, name, review);
-  }
+  ReviewProvider({required this.apiService, required this.id});
 
   late ReviewResponse _reviewResponse;
   late ResultState _state;
@@ -24,12 +22,12 @@ class ReviewProvider extends ChangeNotifier {
   String get message => _message;
   ResultState get state => _state;
 
-  updateName(String value) {
+  void updateName(String value) {
     name = value;
     notifyListeners();
   }
 
-  updateReviews(String value) {
+  void updateReviews(String value) {
     review = value;
     notifyListeners();
   }

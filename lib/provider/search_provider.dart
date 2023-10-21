@@ -27,10 +27,11 @@ class SearchProvider extends ChangeNotifier {
       _state = ResultState.loading;
       notifyListeners();
       final searchResult = await apiService.search(query);
-      if (searchResult.error) {
+      if (searchResult.founded == 0) {
         _state = ResultState.noData;
         notifyListeners();
-        return _message = 'Empty Search Result';
+        return _message =
+            'Nothing Found. Tap anywhere outside of this text to back to the search page';
       } else {
         _state = ResultState.hasData;
         notifyListeners();

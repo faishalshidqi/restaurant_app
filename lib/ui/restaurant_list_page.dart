@@ -56,7 +56,9 @@ class RestaurantListPage extends StatelessWidget {
       builder: (context, state, _) {
         if (state.state == ResultState.loading) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: Colors.grey,
+            ),
           );
         } else if (state.state == ResultState.hasData) {
           return ListView.builder(

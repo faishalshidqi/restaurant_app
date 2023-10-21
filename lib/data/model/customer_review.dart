@@ -9,11 +9,13 @@ class CustomerReview {
     required this.date,
   });
 
-  factory CustomerReview.fromJson(Map<String, dynamic> json) => CustomerReview(
-        name: json["name"],
+  factory CustomerReview.fromJson(Map<String, dynamic> json) {
+    return CustomerReview(
+      name: json["name"],
         review: json["review"],
         date: json["date"],
       );
+  }
 
   Map<String, dynamic> toJson() => {
         "name": name,

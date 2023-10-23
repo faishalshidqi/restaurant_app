@@ -12,9 +12,9 @@ class CustomerReview {
   factory CustomerReview.fromJson(Map<String, dynamic> json) {
     return CustomerReview(
       name: json["name"],
-        review: json["review"],
-        date: json["date"],
-      );
+      review: json["review"],
+      date: json["date"],
+    );
   }
 
   Map<String, dynamic> toJson() => {

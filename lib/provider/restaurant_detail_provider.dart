@@ -15,7 +15,8 @@ class RestaurantDetailProvider extends ChangeNotifier {
   late RestaurantDetail _restaurantDetail;
   late ResultState _state;
   String _message = '';
-
+  int maxDescLines = 6;
+  bool isClicked = false;
   RestaurantDetail get restaurantDetail => _restaurantDetail;
   ResultState get state => _state;
   String get message => _message;

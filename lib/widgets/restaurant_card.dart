@@ -20,7 +20,7 @@ class RestaurantCard extends StatelessWidget {
         ),
         title: Text(restaurant.name),
         subtitle: Text(restaurant.city),
-        onTap: () => Navigator.pushReplacementNamed(
+        onTap: () => Navigator.pushNamed(
             context, RestaurantDetailPage.routeName,
             arguments: restaurant),
       ),

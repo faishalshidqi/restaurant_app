@@ -41,6 +41,7 @@ class RestaurantDetailPage extends StatelessWidget {
           RestaurantDetailProvider(apiService: ApiService(), id: restaurant.id),
       child: Consumer<RestaurantDetailProvider>(
         builder: (context, state, _) {
+          int descLines = state.maxDescLines;
           if (state.state == ResultState.loading) {
             return const Center(
               child: CircularProgressIndicator(
@@ -122,10 +123,26 @@ class RestaurantDetailPage extends StatelessWidget {
                               ),
                               Text(
                                 result.restaurant.description,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 6,
+                                maxLines: descLines,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
+                              TextButton(
+                                  onPressed: () {
+                                    print(state.isClicked);
+                                    print(state.maxDescLines);
+
+                                    state.isClicked = !state.isClicked;
+                                    if (state.isClicked) {
+                                      state.maxDescLines = 30;
+                                    } else {
+                                      state.maxDescLines = 6;
+                                    }
+                                  },
+                                  child: Text(
+                                    'Click here to see more or less',
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge,
+                                  )),
                               const Divider(
                                 color: Colors.grey,
                                 thickness: 5,
@@ -264,6 +281,7 @@ class RestaurantDetailPage extends StatelessWidget {
             );
           } else if (state.state == ResultState.hasData) {
             var result = state.restaurantDetail;
+            int descLines = state.maxDescLines;
             return Scaffold(
                 appBar: AppBar(
                   title: Text(
@@ -338,9 +356,26 @@ class RestaurantDetailPage extends StatelessWidget {
                               Text(
                                 result.restaurant.description,
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 6,
+                                maxLines: descLines,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
+                              TextButton(
+                                  onPressed: () {
+                                    print(state.isClicked);
+                                    print(state.maxDescLines);
+
+                                    state.isClicked = !state.isClicked;
+                                    if (state.isClicked) {
+                                      state.maxDescLines = 30;
+                                    } else {
+                                      state.maxDescLines = 6;
+                                    }
+                                  },
+                                  child: Text(
+                                    'Click here to see more or less',
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  )),
                               const Divider(
                                 color: Colors.grey,
                                 thickness: 5,
@@ -476,19 +511,13 @@ class RestaurantDetailPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                'Nama',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
               CupertinoTextField(
+                placeholder: 'Ketik namamu di sini',
                 onChanged: (String name) => state.updateName(name),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Ulasan',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
               CupertinoTextField(
+                placeholder: 'Ketik ulasanmu di sini',
                 onChanged: (String reviewed) => state.updateReviews(reviewed),
               ),
               const SizedBox(height: 8),

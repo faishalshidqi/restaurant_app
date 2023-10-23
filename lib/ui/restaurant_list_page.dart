@@ -25,8 +25,27 @@ class RestaurantListPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, SearchPage.routeName),
+              onPressed: () async {
+                await showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.white,
+                        title: Text('Apa yang ingin kamu cari?',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        content: TextField(
+                          onSubmitted: (String query) {
+                            Navigator.pushNamed(context, SearchPage.routeName,
+                                arguments: query);
+                          },
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.all(30),
+                              labelText: 'Ketik di sini'),
+                        ),
+                      );
+                    });
+              },
               icon: const Icon(Icons.search))
         ],
       ),
@@ -42,9 +61,24 @@ class RestaurantListPage extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         trailing: IconButton(
-            icon: const Icon(CupertinoIcons.search),
-            onPressed: () =>
-                Navigator.pushNamed(context, SearchPage.routeName)),
+            onPressed: () async {
+              await showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CupertinoAlertDialog(
+                      title: Text('Apa yang ingin kamu cari?',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      content: CupertinoTextField(
+                        onSubmitted: (String query) {
+                          Navigator.pushNamed(context, SearchPage.routeName,
+                              arguments: query);
+                        },
+                        placeholder: 'Ketik di sini',
+                      ),
+                    );
+                  });
+            },
+            icon: const Icon(Icons.search)),
         transitionBetweenRoutes: false,
       ),
       child: _buildRestaurantList(context),

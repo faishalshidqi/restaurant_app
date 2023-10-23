@@ -9,7 +9,9 @@ import 'package:restaurant_app/widgets/restaurant_card.dart';
 
 class SearchPage extends StatelessWidget {
   static const routeName = '/search';
-  const SearchPage({super.key});
+  final String query;
+
+  const SearchPage({super.key, required this.query});
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +22,7 @@ class SearchPage extends StatelessWidget {
     return SafeArea(
       child: Material(
         color: Colors.white,
-        child: Column(
-          children: [
-            Expanded(
-              child: TextField(
-                onSubmitted: (String value) async {
-                  await showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return _buildSearchList(context, value);
-                      });
-                },
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Input Something To Search Here'),
-              ),
-            ),
-          ],
-        ),
+        child: _buildSearchList(context, query),
       ),
     );
   }
@@ -91,13 +76,19 @@ class SearchPage extends StatelessWidget {
           } else if (state.state == ResultState.error) {
             return Center(
               child: Material(
-                child: Text(state.message),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(state.message),
+                ),
               ),
             );
           } else if (state.state == ResultState.noData) {
             return Center(
               child: Material(
-                child: Text(state.message),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(state.message),
+                ),
               ),
             );
           } else {

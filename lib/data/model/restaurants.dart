@@ -20,13 +20,15 @@ class Restaurants {
     required this.restaurants,
   });
 
-  factory Restaurants.fromJson(Map<String, dynamic> json) => Restaurants(
-        error: json['error'],
-        message: json['message'],
-        count: json['count'],
-        restaurants: List<RestaurantInList>.from(
-            json["restaurants"].map((x) => RestaurantInList.fromJson(x))),
-      );
+  factory Restaurants.fromJson(Map<String, dynamic> json) {
+    return Restaurants(
+      error: json['error'],
+      message: json['message'],
+      count: json['count'],
+      restaurants: List<RestaurantInList>.from(
+          json["restaurants"].map((x) => RestaurantInList.fromJson(x))),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'error': error,

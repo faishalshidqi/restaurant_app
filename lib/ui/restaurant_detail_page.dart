@@ -6,6 +6,7 @@ import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/drink.dart';
 import 'package:restaurant_app/data/model/restaurant_detail.dart';
 import 'package:restaurant_app/data/model/restaurant_in_list.dart';
+import 'package:restaurant_app/provider/db_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/review_provider.dart';
 import 'package:restaurant_app/widgets/platform_widget.dart';
@@ -50,13 +51,28 @@ class RestaurantDetailPage extends StatelessWidget {
             );
           } else if (state.state == ResultState.hasData) {
             var result = state.restaurantDetail;
+            var provider = Provider.of<DbProvider>(context);
             return Scaffold(
                 appBar: AppBar(
-                  title: Text(
-                    result.restaurant.name,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
+                    title: Text(
+                      result.restaurant.name,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    actions: [
+                      IconButton(
+                          onPressed: () async {
+                            if (!state.isInFavorite) {
+                              provider.addFavorite(restaurant);
+                              state.setFavorite(true);
+                            } else {
+                              provider.deleteFavorite(restaurant.id);
+                              state.setFavorite(false);
+                            }
+                          },
+                          icon: Icon(state.isInFavorite
+                              ? CupertinoIcons.heart_fill
+                              : CupertinoIcons.heart_slash))
+                    ]),
                 body: SingleChildScrollView(
                   child: Hero(
                     tag: result.restaurant.id,
@@ -128,14 +144,11 @@ class RestaurantDetailPage extends StatelessWidget {
                               ),
                               TextButton(
                                   onPressed: () {
-                                    print(state.isClicked);
-                                    print(state.maxDescLines);
-
-                                    state.isClicked = !state.isClicked;
+                                    state.updateIsClicked(!state.isClicked);
                                     if (state.isClicked) {
-                                      state.maxDescLines = 30;
+                                      state.updateMaxLines(30);
                                     } else {
-                                      state.maxDescLines = 6;
+                                      state.updateMaxLines(6);
                                     }
                                   },
                                   child: Text(
@@ -282,12 +295,26 @@ class RestaurantDetailPage extends StatelessWidget {
           } else if (state.state == ResultState.hasData) {
             var result = state.restaurantDetail;
             int descLines = state.maxDescLines;
+            var provider = Provider.of<DbProvider>(context);
             return Scaffold(
                 appBar: AppBar(
                   title: Text(
                     result.restaurant.name,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
+                  actions: [
+                    IconButton(
+                        onPressed: () async {
+                          if (!state.isInFavorite) {
+                            provider.addFavorite(restaurant);
+                            state.setFavorite(true);
+                          } else {
+                            provider.deleteFavorite(restaurant.id);
+                            state.setFavorite(false);
+                          }
+                        },
+                        icon: const Icon(CupertinoIcons.heart))
+                  ],
                 ),
                 body: SingleChildScrollView(
                   child: Hero(
@@ -361,14 +388,12 @@ class RestaurantDetailPage extends StatelessWidget {
                               ),
                               TextButton(
                                   onPressed: () {
-                                    print(state.isClicked);
-                                    print(state.maxDescLines);
+                                    state.updateIsClicked(!state.isClicked);
 
-                                    state.isClicked = !state.isClicked;
                                     if (state.isClicked) {
-                                      state.maxDescLines = 30;
+                                      state.updateMaxLines(30);
                                     } else {
-                                      state.maxDescLines = 6;
+                                      state.updateMaxLines(6);
                                     }
                                   },
                                   child: Text(

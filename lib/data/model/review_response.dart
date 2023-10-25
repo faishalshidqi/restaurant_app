@@ -18,12 +18,14 @@ class ReviewResponse {
     required this.customerReviews,
   });
 
-  factory ReviewResponse.fromJson(Map<String, dynamic> json) => ReviewResponse(
-        error: json["error"],
-        message: json["message"],
-        customerReviews: List<CustomerReview>.from(
-            json["customerReviews"].map((x) => CustomerReview.fromJson(x))),
-      );
+  factory ReviewResponse.fromJson(Map<String, dynamic> json) {
+    return ReviewResponse(
+      error: json["error"],
+      message: json["message"],
+      customerReviews: List<CustomerReview>.from(
+          json["customerReviews"].map((x) => CustomerReview.fromJson(x))),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "error": error,

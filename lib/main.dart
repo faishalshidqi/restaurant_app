@@ -1,15 +1,41 @@
+import 'dart:io';
+
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/Navigation.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant_in_list.dart';
+import 'package:restaurant_app/data/preferences_helper.dart';
+import 'package:restaurant_app/provider/db_provider.dart';
+import 'package:restaurant_app/provider/preferences_provider.dart';
 import 'package:restaurant_app/provider/restaurants_provider.dart';
+import 'package:restaurant_app/provider/scheduling_provider.dart';
+import 'package:restaurant_app/ui/favorite_list_page.dart';
 import 'package:restaurant_app/ui/home_page.dart';
 import 'package:restaurant_app/ui/restaurant_detail_page.dart';
 import 'package:restaurant_app/ui/search_page.dart';
+import 'package:restaurant_app/utils/background_service.dart';
+import 'package:restaurant_app/utils/notification_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final NotificationHelper _notificationHelper = NotificationHelper();
+  final BackgroundService _service = BackgroundService();
+
+  _service.initializeIsolate();
+  if (Platform.isAndroid) {
+    await AndroidAlarmManager.initialize();
+  }
+  await _notificationHelper.initNotifications(flutterLocalNotificationsPlugin);
+
   runApp(const MyApp());
 }
 
@@ -18,9 +44,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => RestaurantsProvider(apiService: ApiService()),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (_) => RestaurantsProvider(apiService: ApiService())),
+        ChangeNotifierProvider(create: (_) => SchedulingProvider()),
+        ChangeNotifierProvider(
+          create: (_) => PreferencesProvider(
+              preferencesHelper: PreferencesHelper(
+                  sharedPreferences: SharedPreferences.getInstance())),
+        ),
+        ChangeNotifierProvider(create: (_) => DbProvider()),
+      ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'Restaurant Catalog',
         theme: ThemeData(
           colorScheme: Theme.of(context).colorScheme.copyWith(
@@ -52,7 +89,8 @@ class MyApp extends StatelessWidget {
               restaurant: ModalRoute.of(context)?.settings.arguments
                   as RestaurantInList),
           SearchPage.routeName: (context) => SearchPage(
-              query: ModalRoute.of(context)?.settings.arguments as String)
+              query: ModalRoute.of(context)?.settings.arguments as String),
+          FavoriteListPage.routeName: (context) => FavoriteListPage()
         },
       ),
     );

@@ -19,12 +19,13 @@ class RestaurantDetail {
     required this.restaurant,
   });
 
-  factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
-      RestaurantDetail(
-        error: json["error"],
-        message: json["message"],
-        restaurant: RestaurantInDetail.fromJson(json["restaurant"]),
-      );
+  factory RestaurantDetail.fromJson(Map<String, dynamic> json) {
+    return RestaurantDetail(
+      error: json["error"],
+      message: json["message"],
+      restaurant: RestaurantInDetail.fromJson(json["restaurant"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "error": error,

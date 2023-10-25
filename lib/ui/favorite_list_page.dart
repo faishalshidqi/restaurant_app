@@ -43,7 +43,7 @@ class FavoriteListPage extends StatelessWidget {
   }
 
   Widget _buildRestaurantList(BuildContext context) {
-    return Consumer<DbProvider>(
+    return Consumer<FavoriteProvider>(
       builder: (context, state, _) {
         if (state.state == ResultState.loading) {
           return const Center(
@@ -92,6 +92,8 @@ class FavoriteListPage extends StatelessWidget {
 
   Widget _buildRestaurantItem(
       BuildContext context, RestaurantInList restaurant) {
+    var provider = Provider.of<FavoriteProvider>(context);
+    print(provider.isInFavorite);
     return Material(
       color: Colors.white,
       child: ListTile(
@@ -111,6 +113,9 @@ class FavoriteListPage extends StatelessWidget {
             ),
           ),
         ),
+        trailing: Icon(provider.isInFavorite
+            ? CupertinoIcons.heart_fill
+            : CupertinoIcons.heart_slash),
         title: Text(
           restaurant.name,
           style: Theme.of(context).textTheme.titleLarge,

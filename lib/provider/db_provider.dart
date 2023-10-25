@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/model/restaurant_in_list.dart';
 import 'package:restaurant_app/utils/database_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DbProvider extends ChangeNotifier {
+class FavoriteProvider extends ChangeNotifier {
   List<RestaurantInList> _favs = [];
 
   List<RestaurantInList> get favs => _favs;
@@ -18,7 +19,34 @@ class DbProvider extends ChangeNotifier {
 
   late DatabaseHelper _dbHelper;
 
-  DbProvider() {
+  static const isAdded = 'FavIsAdded';
+
+  bool _isInFavorite = false;
+
+  bool get isInFavorite => _isInFavorite;
+
+  void _getIsInFavorite(String id) async {
+    _isInFavorite = await isFavRestaurantAdded(id);
+    notifyListeners();
+  }
+
+  Future<bool> isFavRestaurantAdded(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    print("isFavRestaurantAdded: ${prefs.getBool('${id}_isAdded')}");
+    return prefs.getBool('${id}_isAdded') ?? false;
+  }
+
+  void setFavorite(bool value, String id) {
+    addFavToSP(value, id);
+    _getIsInFavorite(id);
+  }
+
+  void addFavToSP(bool value, String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('${id}_isAdded', value);
+  }
+
+  FavoriteProvider() {
     _dbHelper = DatabaseHelper();
     _getFavorites();
   }

@@ -9,7 +9,6 @@ import 'package:restaurant_app/common/Navigation.dart';
 import 'package:restaurant_app/common/styles.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant_in_list.dart';
-import 'package:restaurant_app/data/preferences_helper.dart';
 import 'package:restaurant_app/provider/db_provider.dart';
 import 'package:restaurant_app/provider/preferences_provider.dart';
 import 'package:restaurant_app/provider/restaurants_provider.dart';
@@ -20,6 +19,7 @@ import 'package:restaurant_app/ui/restaurant_detail_page.dart';
 import 'package:restaurant_app/ui/search_page.dart';
 import 'package:restaurant_app/utils/background_service.dart';
 import 'package:restaurant_app/utils/notification_helper.dart';
+import 'package:restaurant_app/utils/preferences_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
               preferencesHelper: PreferencesHelper(
                   sharedPreferences: SharedPreferences.getInstance())),
         ),
-        ChangeNotifierProvider(create: (_) => DbProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

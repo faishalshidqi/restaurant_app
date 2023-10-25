@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/model/restaurant_in_list.dart';
-import 'package:restaurant_app/provider/db_provider.dart';
+import 'package:restaurant_app/provider/favorite_provider.dart';
 import 'package:restaurant_app/ui/restaurant_detail_page.dart';
 import 'package:restaurant_app/widgets/platform_widget.dart';
 

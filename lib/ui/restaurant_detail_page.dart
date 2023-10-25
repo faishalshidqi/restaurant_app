@@ -6,7 +6,7 @@ import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/drink.dart';
 import 'package:restaurant_app/data/model/restaurant_detail.dart';
 import 'package:restaurant_app/data/model/restaurant_in_list.dart';
-import 'package:restaurant_app/provider/db_provider.dart';
+import 'package:restaurant_app/provider/favorite_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/review_provider.dart';
 import 'package:restaurant_app/widgets/platform_widget.dart';

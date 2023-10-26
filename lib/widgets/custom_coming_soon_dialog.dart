@@ -14,7 +14,9 @@ customDialog(BuildContext context) {
             content: const Text('Fitur ini akan segera hadir!'),
             actions: [
               CupertinoDialogAction(
-                  child: const Text('OK'), onPressed: () => Navigation.back())
+                  child:
+                      Text('OK', style: Theme.of(context).textTheme.labelLarge),
+                  onPressed: () => Navigation.back())
             ],
           );
         });

@@ -56,13 +56,14 @@ class FavoriteListPage extends StatelessWidget {
             itemCount: state.favs.length,
             itemBuilder: (context, index) {
               var restaurant = state.favs[index];
-              //var provider = Provider.of<RestaurantDetailProvider>(context);
+              var provider = Provider.of<FavoriteProvider>(context);
               return Dismissible(
                   key: Key(restaurant.id),
                   background: Container(color: Colors.red),
                   onDismissed: (direction) {
-                    //provider.updateIsAdded(false);
-                    state.deleteFavorite(restaurant.id);
+                    provider.deleteFavorite(restaurant.id);
+                    provider.setFavorite(false, restaurant.id);
+                    state.favs.removeAt(index);
                   },
                   child: _buildRestaurantItem(context, restaurant));
             },
@@ -92,8 +93,6 @@ class FavoriteListPage extends StatelessWidget {
 
   Widget _buildRestaurantItem(
       BuildContext context, RestaurantInList restaurant) {
-    var provider = Provider.of<FavoriteProvider>(context);
-    print(provider.isInFavorite);
     return Material(
       color: Colors.white,
       child: ListTile(
@@ -113,9 +112,30 @@ class FavoriteListPage extends StatelessWidget {
             ),
           ),
         ),
-        trailing: Icon(provider.isInFavorite
-            ? CupertinoIcons.heart_fill
-            : CupertinoIcons.heart_slash),
+        trailing: Consumer<FavoriteProvider>(
+          builder: (context, provider, _) {
+            return FutureBuilder(
+              future: provider.isFavoriteAdded(restaurant.id),
+              builder: (context, snapshot) {
+                bool isFavorite = snapshot.data ?? false;
+                if (isFavorite) {
+                  return IconButton(
+                      onPressed: () async {
+                        provider.deleteFavorite(restaurant.id);
+                      },
+                      icon: const Icon(CupertinoIcons.heart_fill));
+                } else {
+                  return IconButton(
+                    onPressed: () async {
+                      provider.addFavorite(restaurant);
+                    },
+                    icon: const Icon(CupertinoIcons.heart_slash),
+                  );
+                }
+              },
+            );
+          },
+        ),
         title: Text(
           restaurant.name,
           style: Theme.of(context).textTheme.titleLarge,

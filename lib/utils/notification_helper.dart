@@ -34,9 +34,6 @@ class NotificationHelper {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: (NotificationResponse details) async {
       final payload = details.payload;
-      if (payload != null) {
-        print('notification payload: $payload');
-      }
       selectNotificationSubject.add(payload ?? 'empty payload');
     });
   }
@@ -44,8 +41,6 @@ class NotificationHelper {
   Future<void> showNotification(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       Restaurants restaurants) async {
-    //TODO: Hapus try catch
-    try {
       var channelId = 'qwerty';
       var channelName = 'qwerty_channel';
       var channelDescription = 'Restaurant Recommendation Channel';
@@ -74,9 +69,6 @@ class NotificationHelper {
       await flutterLocalNotificationsPlugin.show(
           0, titleNotification, bodyNotification, platformChannelSpecifics,
           payload: json.encode(restaurantList.toJson()));
-    } catch (error) {
-      print(error);
-    }
   }
 
   void configureSelectNotificationSubject(String route) {

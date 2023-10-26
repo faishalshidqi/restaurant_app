@@ -27,14 +27,14 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final NotificationHelper _notificationHelper = NotificationHelper();
-  final BackgroundService _service = BackgroundService();
+  final NotificationHelper notificationHelper = NotificationHelper();
+  final BackgroundService service = BackgroundService();
 
-  _service.initializeIsolate();
+  service.initializeIsolate();
   if (Platform.isAndroid) {
     await AndroidAlarmManager.initialize();
   }
-  await _notificationHelper.initNotifications(flutterLocalNotificationsPlugin);
+  await notificationHelper.initNotifications(flutterLocalNotificationsPlugin);
 
   runApp(const MyApp());
 }
@@ -90,7 +90,7 @@ class MyApp extends StatelessWidget {
                   as RestaurantInList),
           SearchPage.routeName: (context) => SearchPage(
               query: ModalRoute.of(context)?.settings.arguments as String),
-          FavoriteListPage.routeName: (context) => FavoriteListPage()
+          FavoriteListPage.routeName: (context) => const FavoriteListPage()
         },
       ),
     );

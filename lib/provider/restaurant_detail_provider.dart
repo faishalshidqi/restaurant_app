@@ -17,12 +17,10 @@ class RestaurantDetailProvider extends ChangeNotifier {
   String _message = '';
   int maxDescLines = 6;
   bool isClicked = false;
-
-  //late bool isAdded;
-
   RestaurantDetail get restaurantDetail => _restaurantDetail;
   ResultState get state => _state;
   String get message => _message;
+
   void updateMaxLines(int lines) {
     maxDescLines = lines;
     notifyListeners();

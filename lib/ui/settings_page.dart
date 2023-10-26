@@ -24,11 +24,6 @@ class SettingsPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Settings'),
         ),
-        // TODO: Hapus lagi sebelum submit
-        /*floatingActionButton: FloatingActionButton(
-          onPressed: () => BackgroundService.callback(),
-          child: const Icon(Icons.alarm),
-        ),*/
         body: _buildList(context));
   }
 

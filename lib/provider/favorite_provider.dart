@@ -5,56 +5,47 @@ import 'package:restaurant_app/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoriteProvider extends ChangeNotifier {
-  List<RestaurantInList> _favs = [];
-
-  List<RestaurantInList> get favs => _favs;
-
-  late ResultState _state;
-
-  ResultState get state => _state;
-
-  String _message = '';
-
-  String get message => _message;
-
-  late DatabaseHelper _dbHelper;
-
-  static const isAdded = 'FavIsAdded';
-
-  bool _isInFavorite = false;
-
-  bool get isInFavorite => _isInFavorite;
-
-  void _getIsInFavorite(String id) async {
-    _isInFavorite = await isFavRestaurantAdded(id);
-    notifyListeners();
-  }
-
-  Future<bool> isFavRestaurantAdded(String id) async {
-    final prefs = await SharedPreferences.getInstance();
-    print("isFavRestaurantAdded: ${prefs.getBool('${id}_isAdded')}");
-    return prefs.getBool('${id}_isAdded') ?? false;
-  }
-
-  void setFavorite(bool value, String id) {
-    addFavToSP(value, id);
-    _getIsInFavorite(id);
-  }
-
-  void addFavToSP(bool value, String id) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('${id}_isAdded', value);
-  }
-
   FavoriteProvider() {
     _dbHelper = DatabaseHelper();
     _getFavorites();
   }
 
+  List<RestaurantInList> _favs = [];
+  List<RestaurantInList> get favs => _favs;
+  late ResultState _state;
+  ResultState get state => _state;
+  String _message = '';
+  String get message => _message;
+  bool _isInFavorite = false;
+
+  bool get isInFavorite => _isInFavorite;
+
+  late DatabaseHelper _dbHelper;
+  static const isAdded = 'FavIsAdded';
+
+  void _getIsInFavorite(String id) async {
+    _isInFavorite = await isInFavoriteRestaurant(id);
+    notifyListeners();
+  }
+
+  Future<bool> isInFavoriteRestaurant(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('${id}_isAdded') ?? false;
+  }
+
+  void setFavorite(bool value, String id) {
+    addFavPersistent(value, id);
+    _getIsInFavorite(id);
+  }
+
+  void addFavPersistent(bool value, String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('${id}_isAdded', value);
+  }
+
   dynamic _getFavorites() async {
     try {
       _state = ResultState.loading;
-      notifyListeners();
       _favs = await _dbHelper.getFavorites();
       if (_favs.isEmpty) {
         _state = ResultState.noData;
@@ -63,8 +54,8 @@ class FavoriteProvider extends ChangeNotifier {
       } else {
         _state = ResultState.hasData;
         notifyListeners();
-        return _favs;
       }
+      notifyListeners();
     } catch (error) {
       _state = ResultState.error;
       notifyListeners();
@@ -73,16 +64,30 @@ class FavoriteProvider extends ChangeNotifier {
   }
 
   Future<void> addFavorite(RestaurantInList restaurant) async {
-    await _dbHelper.insertFavorite(restaurant);
-    _getFavorites();
+    try {
+      await _dbHelper.insertFavorite(restaurant);
+      _getFavorites();
+    } catch (error) {
+      _state = ResultState.error;
+      _message = '$error';
+      notifyListeners();
+    }
   }
 
-  Future<RestaurantInList> getFavoriteById(String id) async {
-    return await _dbHelper.getFavoriteById(id);
+  Future<bool> isFavoriteAdded(String id) async {
+    final favorite = await _dbHelper.getFavoriteById(id);
+    return favorite.isNotEmpty;
   }
+
 
   void deleteFavorite(String id) async {
-    await _dbHelper.deleteFavorite(id);
-    _getFavorites();
+    try {
+      await _dbHelper.deleteFavorite(id);
+      _getFavorites();
+    } catch (error) {
+      _state = ResultState.error;
+      _message = '$error';
+      notifyListeners();
+    }
   }
 }

@@ -7,6 +7,12 @@ import 'package:restaurant_app/data/model/review_response.dart';
 import 'package:restaurant_app/data/model/searched_restaurant.dart';
 
 class ApiService {
+  http.Client? client;
+
+  ApiService({this.client}) {
+    client ??= http.Client();
+  }
+
   static const String _baseUrl = 'https://restaurant-api.dicoding.dev';
 
   Future<Restaurants> getRestaurants() async {

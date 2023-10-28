@@ -306,7 +306,6 @@ class RestaurantDetailPage extends StatelessWidget {
           } else if (state.state == ResultState.hasData) {
             var result = state.restaurantDetail;
             int descLines = state.maxDescLines;
-            var provider = Provider.of<FavoriteProvider>(context);
             return Scaffold(
                 appBar: AppBar(
                   title: Text(
@@ -314,19 +313,30 @@ class RestaurantDetailPage extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   actions: [
-                    IconButton(
-                        onPressed: () async {
-                          if (!provider.isInFavorite) {
-                            provider.addFavorite(restaurant);
-                            provider.setFavorite(true, restaurant.id);
-                          } else {
-                            provider.deleteFavorite(restaurant.id);
-                            provider.setFavorite(false, restaurant.id);
-                          }
-                        },
-                        icon: Icon(provider.isInFavorite
-                            ? CupertinoIcons.heart_fill
-                            : CupertinoIcons.heart_slash))
+                    Consumer<FavoriteProvider>(
+                      builder: (context, provider, _) {
+                        return FutureBuilder(
+                          future: provider.isFavoriteAdded(restaurant.id),
+                          builder: (context, snapshot) {
+                            bool isFavorite = snapshot.data ?? false;
+                            if (isFavorite) {
+                              return IconButton(
+                                  onPressed: () async {
+                                    provider.deleteFavorite(restaurant.id);
+                                  },
+                                  icon: const Icon(CupertinoIcons.heart_fill));
+                            } else {
+                              return IconButton(
+                                onPressed: () async {
+                                  provider.addFavorite(restaurant);
+                                },
+                                icon: const Icon(CupertinoIcons.heart_slash),
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
                 body: SingleChildScrollView(

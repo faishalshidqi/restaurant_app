@@ -41,34 +41,34 @@ class NotificationHelper {
   Future<void> showNotification(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       Restaurants restaurants) async {
-      var channelId = 'qwerty';
-      var channelName = 'qwerty_channel';
-      var channelDescription = 'Restaurant Recommendation Channel';
+    var channelId = 'qwerty';
+    var channelName = 'qwerty_channel';
+    var channelDescription = 'Restaurant Recommendation Channel';
 
-      var restaurantList = await ApiService().getRestaurants();
-      var restaurants = restaurantList.restaurants;
-      var randomIndex = Random().nextInt(restaurants.length);
-      index = randomIndex;
-      var randomRestaurant = restaurants[index];
+    var restaurantList = await ApiService().getRestaurants();
+    var restaurants = restaurantList.restaurants;
+    var randomIndex = Random().nextInt(restaurants.length);
+    index = randomIndex;
+    var randomRestaurant = restaurants[index];
 
-      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          channelId, channelName,
-          channelDescription: channelDescription,
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'ticker',
-          styleInformation: const DefaultStyleInformation(true, true));
-      var iOSPlatformChannelSpecifics = const DarwinNotificationDetails();
-      var platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics,
-          iOS: iOSPlatformChannelSpecifics);
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        channelId, channelName,
+        channelDescription: channelDescription,
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+        styleInformation: const DefaultStyleInformation(true, true));
+    var iOSPlatformChannelSpecifics = const DarwinNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
 
-      var titleNotification = "<b>Rekomendasi Restoran Untukmu</b>";
-      var bodyNotification = randomRestaurant.name;
+    var titleNotification = "<b>Rekomendasi Restoran Untukmu</b>";
+    var bodyNotification = randomRestaurant.name;
 
-      await flutterLocalNotificationsPlugin.show(
-          0, titleNotification, bodyNotification, platformChannelSpecifics,
-          payload: json.encode(restaurantList.toJson()));
+    await flutterLocalNotificationsPlugin.show(
+        0, titleNotification, bodyNotification, platformChannelSpecifics,
+        payload: json.encode(restaurantList.toJson()));
   }
 
   void configureSelectNotificationSubject(String route) {

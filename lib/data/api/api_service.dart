@@ -43,7 +43,7 @@ class ApiService {
   }
 
   Future<ReviewResponse> sendReview(id, name, review) async {
-    final response = await http.post(Uri.parse('$_baseUrl/review'),
+    final response = await client!.post(Uri.parse('$_baseUrl/review'),
         body: jsonEncode({'id': id, 'name': name, 'review': review}),
         headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 201) {

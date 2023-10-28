@@ -62,7 +62,6 @@ class FavoriteListPage extends StatelessWidget {
                   background: Container(color: Colors.red),
                   onDismissed: (direction) {
                     provider.deleteFavorite(restaurant.id);
-                    provider.setFavorite(false, restaurant.id);
                     state.favs.removeAt(index);
                   },
                   child: _buildRestaurantItem(context, restaurant));
